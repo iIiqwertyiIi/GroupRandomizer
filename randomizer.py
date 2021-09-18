@@ -133,7 +133,7 @@ def GroupsDraw(Teams, Countries, GroupQuantity, NumberOfTeams):
                         if repeated_country >= i['teams']:
                             i['teams'] -= 1
                         if i['repeat'] == 0:
-                            CanRepeat.remove(j)
+                            CanRepeat.remove(i)
                             repeater = False
                 if not repeater:
                     if added == 0:

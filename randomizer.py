@@ -24,6 +24,7 @@ def GroupsDraw(Teams, Countries, GroupQuantity, NumberOfTeams):
             if len(i['groups']) == 1 and group in i['groups']:
                 possible_teams.append(i)
         if len(possible_teams) > 0:
+            repeated_country = 0
             ball = random.choice(possible_teams)
             current_country = ball['country']
             for i in CanRepeat:

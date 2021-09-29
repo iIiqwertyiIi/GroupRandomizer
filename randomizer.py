@@ -24,44 +24,46 @@ def GroupsDraw(Teams, Countries, GroupQuantity, NumberOfTeams):
             if len(i['groups']) == 1 and group in i['groups']:
                 possible_teams.append(i)
         if len(possible_teams) > 1:
-            repeated_country = 0
-            ball = random.choice(possible_teams)
-            current_country = ball['country']
-            for i in CanRepeat:
-                if i['country'] == current_country:
-                    for j in Groups[group]:
-                        if j['country'] == current_country:
-                            repeated_country += 1
-                    if repeated_country > i['repeat'] and repeated_country > i['teams']:
-                        repeater = False
-                    else:
+            if len(Groups[group]) < group_teams:
+                restart = True
+                repeated_country = 0
+                ball = random.choice(possible_teams)
+                current_country = ball['country']
+                for i in CanRepeat:
+                    if i['country'] == current_country:
+                        for j in Groups[group]:
+                            if j['country'] == current_country:
+                                repeated_country += 1
+                        if repeated_country > i['repeat'] and repeated_country > i['teams']:
+                            repeater = False
+                        else:
+                            Groups[group].append({'team': ball['team'], 'country': ball['country']})
+                            Teams[0].remove(ball)
+                            added += 1
+                            repeater = True
+                        if repeated_country >= 1:
+                            i['repeat'] -= 1
+                        if repeated_country >= i['teams']:
+                            i['teams'] -= 1
+                        if i['repeat'] == 0:
+                            CanRepeat.remove(j)
+                            repeater = False
+                if not repeater:
+                    if added == 0:
                         Groups[group].append({'team': ball['team'], 'country': ball['country']})
                         Teams[0].remove(ball)
                         added += 1
-                        repeater = True
-                    if repeated_country >= 1:
-                        i['repeat'] -= 1
-                    if repeated_country >= i['teams']:
-                        i['teams'] -= 1
-                    if i['repeat'] == 0:
-                        CanRepeat.remove(j)
-                        repeater = False
-            if not repeater:
-                if added == 0:
-                    Groups[group].append({'team': ball['team'], 'country': ball['country']})
-                    Teams[0].remove(ball)
-                    added += 1
-                for i in Teams:
-                    for j in i:
-                        if j['country'] == current_country and group in j['groups']:
-                            j['groups'].remove(group)
-                            j['next_groups'].remove(group)
-            for i in Teams[0]:
-                if group in i['groups']:
-                    i['groups'].remove(group)
-            if len(Teams[0]) == 0:
-                Teams.remove(Teams[0])
-                removed_priority = True
+                    for i in Teams:
+                        for j in i:
+                            if j['country'] == current_country and group in j['groups']:
+                                j['groups'].remove(group)
+                                j['next_groups'].remove(group)
+                for i in Teams[0]:
+                    if group in i['groups']:
+                        i['groups'].remove(group)
+                if len(Teams[0]) == 0:
+                    Teams.remove(Teams[0])
+                    removed_priority = True
         if added == 0:
             for i in Teams:
                 for j in i:
@@ -99,8 +101,8 @@ def GroupsDraw(Teams, Countries, GroupQuantity, NumberOfTeams):
                                         l['groups'].remove(current_group)
                                         l['next_groups'].remove(current_group)
                             for k in Teams[0]:
-                                if group in k['groups']:
-                                    k['groups'].remove(group)
+                                if current_group in k['groups']:
+                                    k['groups'].remove(current_group)
                     if restart:
                         break
                 if len(i) == 0:
@@ -161,7 +163,7 @@ def GroupsDraw(Teams, Countries, GroupQuantity, NumberOfTeams):
                 for i in Teams[0]:
                     for j in i['next_groups']:
                         i['groups'].append(j)
-        else:
+        elif len(Groups[group]) == group_teams:
             group += 1
     return Groups
 
